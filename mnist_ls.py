@@ -96,7 +96,7 @@ iters = range(20)
 l = list(itertools.product(n_targets, pi_targets, iters))
 i = int(float(sys.argv[1]))
 n_target, pi_target, iteration = l[i]
-pi_source = 1-pi_target
+pi_source = 0.5#1-pi_target
 accuracy_pilot, accuracy_reweighted, accuracy_label_shift, accuracy_train_pilot,\
         accuracy_train_reweighted, accuracy_train_ls, accuracy_gs, accuracy_oracle\
              = label_shift(n_target=n_target,\
