@@ -68,6 +68,12 @@ def label_shift(n_target = 1000, n_source = 20000, pi_target = 0.1,\
     accuracy_train_ls = model_pilot.evaluate(x_source, y_source, verbose=2, batch_size=n_source)[1]
     accuracy_label_shift = model_pilot.evaluate(x_target, y_target, verbose=2, batch_size=n_target)[1]
 
+    bias_oracle = np.log(pi_target/pi_target) - np.log(pi_source/(1-pi_source))
+    w = model_pilot.get_weights()
+    w[-1][0], w[-1][1] = w[-1][0] + bias_correction - bias_oracle, w[-1][1] - bias_correction + bias_oracle
+    model_pilot.set_weights(w)
+    accuracy_oracle = model_pilot.evaluate(x_target, y_target, verbose=2, batch_size=n_target)[1]
+
 
     model_gs = tf.keras.models.Sequential([
             tf.keras.layers.Conv1D(3, 2, input_shape=(28, 28)),
@@ -81,7 +87,7 @@ def label_shift(n_target = 1000, n_source = 20000, pi_target = 0.1,\
     accuracy_gs = model_gs.evaluate(x_val, y_val, verbose=2, batch_size=1000)[1]
 
     return accuracy_pilot, accuracy_reweighted, accuracy_label_shift, accuracy_train_pilot,\
-        accuracy_train_reweighted, accuracy_train_ls, accuracy_gs
+        accuracy_train_reweighted, accuracy_train_ls, accuracy_gs, accuracy_oracle
 
 
 n_targets = [500, 1000, 5000, 10000, 20000]
@@ -92,8 +98,9 @@ i = int(float(sys.argv[1]))
 n_target, pi_target, iteration = l[i]
 pi_source = 1-pi_target
 accuracy_pilot, accuracy_reweighted, accuracy_label_shift, accuracy_train_pilot,\
-        accuracy_train_reweighted, accuracy_train_ls, accuracy_gs = label_shift(n_target=n_target,\
-         pi_source=pi_source, pi_target=pi_target, epochs= 20, batch_size=None)
+        accuracy_train_reweighted, accuracy_train_ls, accuracy_gs, accuracy_oracle\
+             = label_shift(n_target=n_target,\
+         pi_source=pi_source, pi_target=pi_target, epochs= 25, batch_size=None)
 filename = f'nt_{n_target}_pt_{pi_target}_i_{iteration}'
 dict_output = dict()
 dict_output['n_target'] = n_target
@@ -105,6 +112,7 @@ dict_output['acc-rw-test'] = accuracy_reweighted
 dict_output['acc-rw-train'] = accuracy_train_reweighted
 dict_output['acc-ls-test'] = accuracy_label_shift
 dict_output['acc-ls-train'] = accuracy_train_ls
+dict_output['acc-oracle'] = accuracy_oracle
 dict_output['gold-standard'] = accuracy_gs
 with open('temp/'+filename, 'w+') as f:
     f.writelines(str(dict_output) + '\n')
