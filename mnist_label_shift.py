@@ -106,7 +106,7 @@ n_target, pi_target, iteration = l[i]
 pi_source = 1-pi_target
 accuracy_pilot, accuracy_reweighted, accuracy_label_shift, accuracy_train_pilot,\
         accuracy_train_reweighted, accuracy_train_ls, accuracy_gs = label_shift(n_target=n_target,\
-         pi_source=pi_source, pi_target=pi_target, epochs= 50, batch_size=None)
+         pi_source=pi_source, pi_target=pi_target, epochs= 250, batch_size=None)
 filename = f'nt_{n_target}_pt_{pi_target}_i_{iteration}'
 dict_output = dict()
 dict_output['n_target'] = n_target
