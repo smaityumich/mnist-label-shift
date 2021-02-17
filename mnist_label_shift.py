@@ -10,7 +10,7 @@ def label_shift(n_target = 1000, n_source = 20000, pi_target = 0.1,\
 
     x_source, y_source = mixture(n = n_source, pi = pi_source, flatten=False)
     x_target, y_target = mixture(n = n_target, pi = pi_target, flatten=False)
-    x_val, y_val = mixture(n = n_target, pi = pi_target, flatten=False)
+    x_val, y_val = mixture(n = 5000, pi = pi_target, flatten=False)
 
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
@@ -25,8 +25,8 @@ def label_shift(n_target = 1000, n_source = 20000, pi_target = 0.1,\
     
     model_pilot.compile(optimizer='adam', loss=loss_fn, metrics=['accuracy'])
     model_pilot.fit(x_source, y_source, epochs=epochs)
-    accuracy_train_pilot = model_pilot.evaluate(x_source, y_source, verbose=2)[1]
-    accuracy_pilot = model_pilot.evaluate(x_target, y_target, verbose=2)[1]
+    accuracy_train_pilot = model_pilot.evaluate(x_source, y_source, verbose=2, batch_size=n_source)[1]
+    accuracy_pilot = model_pilot.evaluate(x_target, y_target, verbose=2, batch_size=n_target)[1]
 
 
 
@@ -46,8 +46,8 @@ def label_shift(n_target = 1000, n_source = 20000, pi_target = 0.1,\
         ])
     model_reweighted.compile(optimizer='adam', loss=loss_fn, metrics=['accuracy'])
     model_reweighted.fit(x_source, y_source, epochs=epochs, sample_weight = sample_weight)
-    accuracy_train_reweighted = model_reweighted.evaluate(x_source, y_source, verbose=2)[1]
-    accuracy_reweighted = model_reweighted.evaluate(x_target, y_target, verbose=2)[1]
+    accuracy_train_reweighted = model_reweighted.evaluate(x_source, y_source, verbose=2, batch_size=n_source)[1]
+    accuracy_reweighted = model_reweighted.evaluate(x_target, y_target, verbose=2, batch_size=n_target)[1]
 
     
     ### Label shift 
@@ -77,8 +77,8 @@ def label_shift(n_target = 1000, n_source = 20000, pi_target = 0.1,\
             ])
     model_label_shift.compile(optimizer='adam', loss=loss_fn, metrics=['accuracy'])
     model_label_shift.fit(x_source, y_source, epochs=epochs, sample_weight = sample_weight)
-    accuracy_train_ls = model_label_shift.evaluate(x_source, y_source, verbose=2)[1]
-    accuracy_label_shift = model_label_shift.evaluate(x_target, y_target, verbose=2)[1]
+    accuracy_train_ls = model_label_shift.evaluate(x_source, y_source, verbose=2, batch_size=n_source)[1]
+    accuracy_label_shift = model_label_shift.evaluate(x_target, y_target, verbose=2, batch_size=n_target)[1]
 
 
     model_gs = tf.keras.models.Sequential([
@@ -90,7 +90,7 @@ def label_shift(n_target = 1000, n_source = 20000, pi_target = 0.1,\
             ])
     model_gs.compile(optimizer='adam', loss=loss_fn, metrics=['accuracy'])
     model_gs.fit(x_target, y_target, epochs=epochs)
-    accuracy_gs = model_gs.evaluate(x_val, y_val, verbose=2)[1]
+    accuracy_gs = model_gs.evaluate(x_val, y_val, verbose=2, batch_size=5000)[1]
 
     return accuracy_pilot, accuracy_reweighted, accuracy_label_shift, accuracy_train_pilot,\
         accuracy_train_reweighted, accuracy_train_ls, accuracy_gs
