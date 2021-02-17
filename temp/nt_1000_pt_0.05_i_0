@@ -1,1 +1,0 @@
-{'n_target': 1000, 'pi_target': 0.05, 'iter': 0, 'acc-pilot-test': 0.6899999976158142, 'acc-pilot-train': 0.9890499711036682, 'acc-rw-test': 0.925000011920929, 'acc-rw-train': 0.9180499911308289, 'acc-ls-test': 0.9229999780654907, 'acc-ls-train': 0.8435999751091003, 'gold-standard': 0.9950000047683716}

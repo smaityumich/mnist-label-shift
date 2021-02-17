@@ -15,7 +15,7 @@ def read_idx(filename, flatten=True):
 
 def mixture(n = 10000, pi = 0.5, path=None, flatten = True):
     if path is None:
-        path = '/Users/smaity/projects/mnist-label-shift/MNIST'
+        path = './MNIST'
     # Download data from here http://yann.lecun.com/exdb/mnist/
     x_train = read_idx(path + '/train-images-idx3-ubyte', flatten)
     y_train = read_idx(path + '/train-labels-idx1-ubyte', flatten)
