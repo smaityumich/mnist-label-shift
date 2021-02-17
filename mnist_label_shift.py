@@ -96,7 +96,7 @@ def label_shift(n_target = 1000, n_source = 20000, pi_target = 0.1,\
 
 
 n_targets = [1000, 5000, 10000, 20000]
-pi_targets = [0.05, 0.1, 0.2, 0.4]
+pi_targets = [0.1, 0.2, 0.3, 0.4, 0.5]
 iters = range(20)
 l = list(itertools.product(n_targets, pi_targets, iters))
 i = int(float(sys.argv[1]))
